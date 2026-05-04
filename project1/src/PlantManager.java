@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
-import java.util.Collections;
 
 public class PlantManager {
     private final List<Plant> plants = new ArrayList<>();
@@ -37,11 +36,11 @@ public class PlantManager {
     }
 
     public void sortByName() {
-        Collections.sort(plants, (p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
+        plants.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
     }
 
     public void sortByLastWateringDate() {
-        Collections.sort(plants, (p1, p2) -> {
+        plants.sort((p1, p2) -> {
             int dateComparison = p1.getLastWateringDate().compareTo(p2.getLastWateringDate());
             if (dateComparison != 0) {
                 return dateComparison;
