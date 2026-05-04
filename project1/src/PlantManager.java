@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 public class PlantManager {
     private final List<Plant> plants = new ArrayList<>();
@@ -18,6 +19,20 @@ public class PlantManager {
 
     public List<Plant> getPlantsCopy() {
         return new ArrayList<>(plants);
+    }
+
+    public List<Plant> getPlantsToWater() {
+        List<Plant> toWater = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+
+        for (Plant plant : plants) {
+            LocalDate nextWateringDate = plant.getLastWateringDate().plusDays(plant.getWateringFrequency());
+            if (nextWateringDate.isBefore(today)) {
+                toWater.add(plant);
+            }
+        }
+
+        return toWater;
     }
 }
 

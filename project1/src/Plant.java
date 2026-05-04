@@ -5,15 +5,15 @@ public class Plant {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private String name;
     private String notes;
-    private LocalDate planted;
-    private LocalDate watering;
+    private LocalDate plantedDate;
+    private LocalDate lastWateringDate;
     private int wateringFrequency;
 
-    public Plant(String name, String notes, LocalDate planted, LocalDate watering, int wateringFrequency) throws PlantException {
+    public Plant(String name, String notes, LocalDate plantedDate, LocalDate lastWateringDate, int wateringFrequency) throws PlantException {
         setName(name);
         setNotes(notes);
-        setPlanted(planted);
-        setWatering(watering);
+        setPlantedDate(plantedDate);
+        setLastWateringDate(lastWateringDate);
         setWateringFrequency(wateringFrequency);
     }
 
@@ -33,12 +33,12 @@ public class Plant {
         return notes;
     }
 
-    public LocalDate getPlanted() {
-        return planted;
+    public LocalDate getPlantedDate() {
+        return plantedDate;
     }
 
-    public LocalDate getWatering() {
-        return watering;
+    public LocalDate getLastWateringDate() {
+        return lastWateringDate;
     }
 
     public int getWateringFrequency() {
@@ -56,24 +56,24 @@ public class Plant {
         this.notes = (notes == null) ? "" : notes;
     }
 
-    public void setPlanted(LocalDate planted) throws PlantException {
-        if (planted == null) {
+    public void setPlantedDate(LocalDate plantedDate) throws PlantException {
+        if (plantedDate == null) {
             throw new PlantException("Datum zasazení nesmí být null.");
         }
-        if (this.watering != null && this.watering.isBefore(planted)) {
+        if (this.lastWateringDate != null && this.lastWateringDate.isBefore(plantedDate)) {
             throw new PlantException("Datum poslední zálivky nesmí být starší než datum zasazení.");
         }
-        this.planted = planted;
+        this.plantedDate = plantedDate;
     }
 
-    public void setWatering(LocalDate watering) throws PlantException {
-        if (watering == null) {
+    public void setLastWateringDate(LocalDate lastWateringDate) throws PlantException {
+        if (lastWateringDate == null) {
             throw new PlantException("Datum poslední zálivky nesmí být null.");
         }
-        if (this.planted != null && watering.isBefore(this.planted)) {
+        if (this.plantedDate != null && lastWateringDate.isBefore(this.plantedDate)) {
             throw new PlantException("Datum poslední zálivky nesmí být starší než datum zasazení.");
         }
-        this.watering = watering;
+        this.lastWateringDate = lastWateringDate;
     }
 
     public void setWateringFrequency(int wateringFrequency) throws PlantException {
@@ -84,19 +84,19 @@ public class Plant {
     }
 
     public String getWateringInfo() {
-        LocalDate nextWatering = watering.plusDays(wateringFrequency);
+        LocalDate nextWatering = lastWateringDate.plusDays(wateringFrequency);
         return String.format("Rostlina: %s, poslední zálivka: %s, příští zálivka: %s",
-                name, watering, nextWatering);
+                name, lastWateringDate, nextWatering);
     }
 
     public void doWateringNow() throws PlantException {
-        setWatering(LocalDate.now());
+        setLastWateringDate(LocalDate.now());
     }
 
     @Override
     public String toString() {
         return String.format("Plant{name='%s', notes='%s', planted=%s, watering=%s, wateringFrequency=%d}",
-                name, notes, DATE_FORMATTER.format(planted), DATE_FORMATTER.format(watering), wateringFrequency);
+                name, notes, DATE_FORMATTER.format(plantedDate), DATE_FORMATTER.format(lastWateringDate), wateringFrequency);
     }
 }
 
