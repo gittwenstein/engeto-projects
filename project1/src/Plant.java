@@ -1,6 +1,8 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Plant {
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private String name;
     private String notes;
     private LocalDate planted;
@@ -89,6 +91,12 @@ public class Plant {
 
     public void doWateringNow() throws PlantException {
         setWatering(LocalDate.now());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Plant{name='%s', notes='%s', planted=%s, watering=%s, wateringFrequency=%d}",
+                name, notes, DATE_FORMATTER.format(planted), DATE_FORMATTER.format(watering), wateringFrequency);
     }
 }
 
