@@ -58,12 +58,18 @@ public class Plant {
         if (planted == null) {
             throw new PlantException("Datum zasazení nesmí být null.");
         }
+        if (this.watering != null && this.watering.isBefore(planted)) {
+            throw new PlantException("Datum poslední zálivky nesmí být starší než datum zasazení.");
+        }
         this.planted = planted;
     }
 
     public void setWatering(LocalDate watering) throws PlantException {
         if (watering == null) {
             throw new PlantException("Datum poslední zálivky nesmí být null.");
+        }
+        if (this.planted != null && watering.isBefore(this.planted)) {
+            throw new PlantException("Datum poslední zálivky nesmí být starší než datum zasazení.");
         }
         this.watering = watering;
     }
