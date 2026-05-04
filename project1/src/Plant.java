@@ -9,9 +9,9 @@ public class Plant {
 
     public Plant(String name, String notes, LocalDate planted, LocalDate watering, int wateringFrequency) throws PlantException {
         setName(name);
-        this.notes = notes;
-        this.planted = planted;
-        this.watering = watering;
+        setNotes(notes);
+        setPlanted(planted);
+        setWatering(watering);
         this.wateringFrequency = wateringFrequency;
     }
 
@@ -48,6 +48,24 @@ public class Plant {
             throw new PlantException("Název rostliny nesmí být prázdný.");
         }
         this.name = name.trim();
+    }
+
+    public void setNotes(String notes) {
+        this.notes = (notes == null) ? "" : notes;
+    }
+
+    public void setPlanted(LocalDate planted) throws PlantException {
+        if (planted == null) {
+            throw new PlantException("Datum zasazení nesmí být null.");
+        }
+        this.planted = planted;
+    }
+
+    public void setWatering(LocalDate watering) throws PlantException {
+        if (watering == null) {
+            throw new PlantException("Datum poslední zálivky nesmí být null.");
+        }
+        this.watering = watering;
     }
 }
 
