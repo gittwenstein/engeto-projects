@@ -7,9 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PlantManager {
     private final List<Plant> plants = new ArrayList<>();
+    private static final Pattern TRAILING_NUMBER_PATTERN = Pattern.compile("^(.*?)(\\d+)$");
 
     public void addPlant(Plant plant) {
         plants.add(plant);
@@ -42,7 +45,7 @@ public class PlantManager {
     }
 
     public void sortByName() {
-        plants.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
+        plants.sort((p1, p2) -> comparePlantNamesNatural(p1.getName(), p2.getName()));
     }
 
     public void sortByLastWateringDate() {
@@ -51,8 +54,39 @@ public class PlantManager {
             if (dateComparison != 0) {
                 return dateComparison;
             }
-            return p1.getName().compareToIgnoreCase(p2.getName());
+            return comparePlantNamesNatural(p1.getName(), p2.getName());
         });
+    }
+
+    private int comparePlantNamesNatural(String first, String second) {
+        Matcher firstMatcher = TRAILING_NUMBER_PATTERN.matcher(first);
+        Matcher secondMatcher = TRAILING_NUMBER_PATTERN.matcher(second);
+
+        boolean firstHasTrailingNumber = firstMatcher.matches();
+        boolean secondHasTrailingNumber = secondMatcher.matches();
+
+        if (firstHasTrailingNumber && secondHasTrailingNumber) {
+            String firstPrefix = firstMatcher.group(1);
+            String secondPrefix = secondMatcher.group(1);
+
+            int prefixComparison = firstPrefix.compareToIgnoreCase(secondPrefix);
+            if (prefixComparison != 0) {
+                return prefixComparison;
+            }
+
+            long firstNumber = Long.parseLong(firstMatcher.group(2));
+            long secondNumber = Long.parseLong(secondMatcher.group(2));
+            int numberComparison = Long.compare(firstNumber, secondNumber);
+            if (numberComparison != 0) {
+                return numberComparison;
+            }
+        }
+
+        int insensitiveComparison = first.compareToIgnoreCase(second);
+        if (insensitiveComparison != 0) {
+            return insensitiveComparison;
+        }
+        return first.compareTo(second);
     }
 
     public String formatForFile(Plant plant) {
