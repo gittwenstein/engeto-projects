@@ -3,6 +3,10 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 
 public class PlantManager {
     private final List<Plant> plants = new ArrayList<>();
@@ -102,6 +106,54 @@ public class PlantManager {
             return Integer.parseInt(frequencyStr);
         } catch (NumberFormatException e) {
             throw new PlantException("Neplatná frekvence '" + frequencyStr + "' (očekáváno celé číslo)");
+        }
+    }
+
+    public void loadFromFile(Path filePath) throws PlantException {
+        try {
+            List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+            List<Plant> loadedPlants = new ArrayList<>();
+
+            int lineNumber = 0;
+            for (String line : lines) {
+                lineNumber++;
+                String trimmed = line.trim();
+
+                // Skip blank lines
+                if (trimmed.isEmpty()) {
+                    continue;
+                }
+
+                Plant plant = parsePlantLine(trimmed, lineNumber);
+                loadedPlants.add(plant);
+            }
+
+            // Only replace internal list if all lines parsed successfully
+            this.plants.clear();
+            this.plants.addAll(loadedPlants);
+
+        } catch (IOException e) {
+            throw new PlantException("Chyba při čtení souboru: " + e.getMessage(), e);
+        }
+    }
+
+    public void saveToFile(Path filePath) throws PlantException {
+        try {
+            // Create parent directories if they don't exist
+            if (filePath.getParent() != null) {
+                Files.createDirectories(filePath.getParent());
+            }
+
+            // Format all plants and write to file
+            List<String> lines = new ArrayList<>();
+            for (Plant plant : plants) {
+                lines.add(formatForFile(plant));
+            }
+
+            Files.write(filePath, lines, StandardCharsets.UTF_8);
+
+        } catch (IOException e) {
+            throw new PlantException("Chyba při zápisu do souboru: " + e.getMessage(), e);
         }
     }
 }
