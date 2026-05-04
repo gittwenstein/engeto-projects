@@ -12,7 +12,7 @@ public class Plant {
         setNotes(notes);
         setPlanted(planted);
         setWatering(watering);
-        this.wateringFrequency = wateringFrequency;
+        setWateringFrequency(wateringFrequency);
     }
 
     public Plant(String name, int wateringFrequency) throws PlantException {
@@ -66,6 +66,13 @@ public class Plant {
             throw new PlantException("Datum poslední zálivky nesmí být null.");
         }
         this.watering = watering;
+    }
+
+    public void setWateringFrequency(int wateringFrequency) throws PlantException {
+        if (wateringFrequency <= 0) {
+            throw new PlantException("Frekvence zálivky musí být větší než 0.");
+        }
+        this.wateringFrequency = wateringFrequency;
     }
 }
 
