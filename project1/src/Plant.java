@@ -80,6 +80,16 @@ public class Plant {
         }
         this.wateringFrequency = wateringFrequency;
     }
+
+    public String getWateringInfo() {
+        LocalDate nextWatering = watering.plusDays(wateringFrequency);
+        return String.format("Rostlina: %s, poslední zálivka: %s, příští zálivka: %s",
+                name, watering, nextWatering);
+    }
+
+    public void doWateringNow() throws PlantException {
+        setWatering(LocalDate.now());
+    }
 }
 
 
