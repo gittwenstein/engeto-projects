@@ -90,27 +90,27 @@ public class PlantManager {
     }
 
     public String formatForFile(Plant plant) {
-        // File format: name \t notes \t frequency \t planted \t watering
+        // File format: name \t notes \t frequency \t last watering \t planting
         return String.format("%s\t%s\t%d\t%s\t%s",
                 plant.getName(),
                 plant.getNotes(),
                 plant.getWateringFrequency(),
-                plant.getPlantedDate().toString(),
-                plant.getLastWateringDate().toString());
+                plant.getLastWateringDate().toString(),
+                plant.getPlantedDate().toString());
     }
 
     public Plant parsePlantLine(String line, int lineNumber) throws PlantException {
         String[] parts = line.split("\t", -1);
         if (parts.length != 5) {
-            throw new PlantException("Řádek " + lineNumber + ": očekáváno 5 položek (název, poznámky, frekvence, zasazeno, zality), nalezeno " + parts.length);
+            throw new PlantException("Řádek " + lineNumber + ": očekáváno 5 položek (název, poznámky, frekvence, poslední zálivka, zasazení), nalezeno " + parts.length);
         }
 
-        // File columns (observed): name, notes, frequency, planted, watering
+        // File columns (observed): name, notes, frequency, last watering, planting
         String name = parts[0].trim();
         String notes = parts[1].trim();
         String frequencyStr = parts[2].trim();
-        String plantedStr = parts[3].trim();
-        String wateringStr = parts[4].trim();
+        String wateringStr = parts[3].trim();
+        String plantedStr = parts[4].trim();
 
         try {
             int frequency = parseFrequency(frequencyStr);
