@@ -125,11 +125,9 @@ public class PlantManager {
 
     private LocalDate parseDate(String dateStr) throws PlantException {
         try {
-            // Try ISO format first (YYYY-MM-DD)
             return LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
         } catch (DateTimeParseException e1) {
             try {
-                // Try Czech format (d.M.yyyy)
                 return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("d.M.yyyy"));
             } catch (DateTimeParseException e2) {
                 throw new PlantException("Neplatné datum '" + dateStr + "' (očekáváno formát YYYY-MM-DD nebo d.M.yyyy)");
@@ -154,12 +152,9 @@ public class PlantManager {
             for (String line : lines) {
                 lineNumber++;
                 String trimmed = line.trim();
-
-                // Skip blank lines
                 if (trimmed.isEmpty()) {
                     continue;
                 }
-
                 Plant plant = parsePlantLine(trimmed, lineNumber);
                 loadedPlants.add(plant);
             }
@@ -175,17 +170,13 @@ public class PlantManager {
 
     public void saveToFile(Path filePath) throws PlantException {
         try {
-            // Create parent directories if they don't exist
             if (filePath.getParent() != null) {
                 Files.createDirectories(filePath.getParent());
             }
-
-            // Format all plants and write to file
             List<String> lines = new ArrayList<>();
             for (Plant plant : plants) {
                 lines.add(formatForFile(plant));
             }
-
             Files.write(filePath, lines, StandardCharsets.UTF_8);
 
         } catch (IOException e) {

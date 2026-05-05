@@ -20,13 +20,13 @@ public class Main {
             System.out.println("Nebyl nalezen vstupní soubor. Pokračuji s prázdným seznamem.");
         }
 
-        // Vypiš informace o zálivce pro všechny květiny
+        // Print watering info for all plants
         System.out.println("\nInformace o zálivce pro všechny květiny:");
         for (Plant p : manager.getPlantsCopy()) {
             System.out.println(p.getWateringInfo());
         }
 
-        // Přidej novou květinu
+        // Add a new plant
         try {
             Plant newPlant = new Plant("Monstera deliciosa", "Velký list", LocalDate.now().minusDays(30), LocalDate.now().minusDays(3), 10);
             manager.addPlant(newPlant);
@@ -35,7 +35,7 @@ public class Main {
             System.err.println("Nelze přidat novou květinu: " + e.getMessage());
         }
 
-        // Přidej 10 tulipánů
+        // Add 10 tulips
         try {
             for (int i = 1; i <= 10; i++) {
                 Plant t = new Plant("Tulipán na prodej " + i, "Tulipán na prodej " + i, LocalDate.now(), LocalDate.now(), 14);
@@ -46,14 +46,14 @@ public class Main {
             System.err.println("Chyba při přidávání tulipánů: " + e.getMessage());
         }
 
-        // Odeber květinu na třetí pozici (index 2) pokud existuje
+        // Remove plant at 3rd position (index 2) if it exists
         if (manager.getPlantsCopy().size() > 2) {
             Plant removed = manager.getPlant(2);
             manager.removePlant(2);
             System.out.println("Odebrána květina na indexu 2: " + removed.getName());
         }
 
-        // Ulož seznam do souboru
+        // Save list to file
         Path out = Paths.get("kvetiny-vystup.txt");
         try {
             manager.saveToFile(out);
@@ -62,7 +62,7 @@ public class Main {
             System.err.println("Chyba při ukládání: " + e.getMessage());
         }
 
-        // Načti zpět uložený soubor a vypiš stručné info
+        // Reload saved file and print summary info
         try {
             PlantManager reloaded = new PlantManager();
             reloaded.loadFromFile(out);
@@ -71,12 +71,12 @@ public class Main {
             System.err.println("Chyba při opětovném načítání uloženého souboru: " + e.getMessage());
         }
 
-        // Dále vyzkoušíme načtení známých testovacích souborů se špatnými daty
+        // Test loading known test files with bad data
         String[] badFiles = new String[]{"data/kvetiny-spatne-datum.txt", "data/kvetiny-spatne-frekvence.txt"};
         for (String bf : badFiles) {
             Path p = Paths.get(bf);
             if (!p.toFile().exists()) {
-                // fallback: try parent folder
+                // Fallback: try parent folder
                 Path alt = Paths.get("../" + bf);
                 if (alt.toFile().exists()) p = alt;
             }
@@ -93,7 +93,7 @@ public class Main {
             }
         }
 
-        // Řazení a výpis
+        // Sorting and printing
         System.out.println("\nSeřazení podle názvu (výchozí):");
         manager.sortByName();
         for (Plant p : manager.getPlantsCopy()) {
@@ -106,7 +106,7 @@ public class Main {
             System.out.println("  - " + p.getName() + " (poslední zálivka: " + p.getLastWateringDate() + ")");
         }
 
-        // Které rostliny je třeba zalít
+        // Which plants need watering
         System.out.println("\nRostliny které je třeba zalít:");
         for (Plant p : manager.getPlantsToWater()) {
             System.out.println("  - " + p.getName() + " -> " + p.getWateringInfo());
