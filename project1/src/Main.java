@@ -1,6 +1,7 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -66,7 +67,25 @@ public class Main {
         try {
             PlantManager reloaded = new PlantManager();
             reloaded.loadFromFile(out);
-            System.out.println("\nOpětovné načtení uloženého souboru, počet rostlin: " + reloaded.getPlantsCopy().size());
+            List<Plant> originalPlants = manager.getPlantsCopy();
+            List<Plant> reloadedPlants = reloaded.getPlantsCopy();
+
+            boolean sizeMatches = originalPlants.size() == reloadedPlants.size();
+            boolean contentMatches = sizeMatches;
+
+            if (contentMatches) {
+                for (int i = 0; i < originalPlants.size(); i++) {
+                    String originalLine = manager.formatForFile(originalPlants.get(i));
+                    String reloadedLine = reloaded.formatForFile(reloadedPlants.get(i));
+                    if (!originalLine.equals(reloadedLine)) {
+                        contentMatches = false;
+                        break;
+                    }
+                }
+            }
+
+            System.out.println("\nOpětovné načtení uloženého souboru, počet rostlin: " + reloadedPlants.size());
+            System.out.println("Kontrola obsahu uloženého souboru: " + (contentMatches ? "OK" : "NESOUHLASÍ"));
         } catch (PlantException e) {
             System.err.println("Chyba při opětovném načítání uloženého souboru: " + e.getMessage());
         }
