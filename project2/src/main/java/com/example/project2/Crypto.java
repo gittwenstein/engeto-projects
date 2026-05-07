@@ -1,10 +1,24 @@
 package com.example.project2;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+
 public class Crypto {
     private Integer id;
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String symbol;
+
+    @NotNull
+    @PositiveOrZero
     private Double price;
+
+    @NotNull
+    @PositiveOrZero
     private Double quantity;
 
     public Crypto() {
